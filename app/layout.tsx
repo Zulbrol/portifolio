@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
-import "./globals.css"; // Esta linha injeta as regras do Tailwind e tira a parede preta
+import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space-grotesk",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Vortex — Cinematic Portfolio",
+  title: "ZULBROL — Cinematic Portfolio",
   description: "High-End Video Editing & Motion Design Portfolio",
 };
 
@@ -18,8 +19,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
-      <body className={`${spaceGrotesk.variable} font-sans bg-black text-white antialiased`}>
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body
+        className={`${spaceGrotesk.variable} font-sans bg-black text-white antialiased overflow-x-hidden`}
+      >
         {children}
       </body>
     </html>

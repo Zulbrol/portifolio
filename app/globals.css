@@ -1,4 +1,4 @@
-@import url('https://googleapis.com');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -10,42 +10,109 @@
   margin: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html,
 body {
-  max-width: 100vw;
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
+
   background-color: #000000;
   color: #ffffff;
-  font-family: 'Space Grotesk', sans-serif !important;
+
+  font-family: 'Space Grotesk', sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  text-rendering: optimizeLegibility;
 }
 
-/* Força o vídeo a ocupar a tela cheia por trás de tudo caso o Tailwind falhe */
+/* ROOT NEXT */
+#__next {
+  min-height: 100vh;
+}
+
+/* VÍDEO FIXO */
 .fixed-video-bg {
-  position: fixed !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  z-index: -50 !important;
+  position: fixed;
+  inset: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  overflow: hidden;
+
+  z-index: 0;
+
   background-color: #000000;
-  pointer-events: none !important;
+
+  pointer-events: none;
 }
 
+/* ELEMENTO DE VÍDEO */
 .video-element {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  opacity: 0.35 !important;
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  opacity: 0.28;
+
+  pointer-events: none;
 }
 
-/* Customização da barra de rolagem */
+/* OVERLAY CINEMÁTICO */
+.video-overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(0, 0, 0, 0.08) 0%,
+      rgba(0, 0, 0, 0.92) 100%
+    );
+
+  pointer-events: none;
+}
+
+/* SCROLLBAR */
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: #000000;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #222222;
-  border-radius: 3px;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a3a;
+}
+
+/* SELEÇÃO */
+::selection {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+/* PERFORMANCE */
+video,
+img {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* REMOVE TAP HIGHLIGHT MOBILE */
+* {
+  -webkit-tap-highlight-color: transparent;
 }
