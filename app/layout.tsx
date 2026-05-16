@@ -1,16 +1,9 @@
-import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
-import "./globals.css";
+import './globals.css';
+import Cursor from '@/components/Cursor';
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  display: "swap",
-});
-
-export const metadata: Metadata = {
-  title: "ZULBROL — Cinematic Portfolio",
-  description: "High-End Video Editing & Motion Design Portfolio",
+export const metadata = {
+  title: 'Zulbrol | Portfolio',
+  description: 'High-End Video Editing & Motion Design',
 };
 
 export default function RootLayout({
@@ -19,10 +12,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <body
-        className={`${spaceGrotesk.variable} font-sans bg-black text-white antialiased overflow-x-hidden`}
-      >
+    <html lang="pt">
+      <body className="antialiased" style={{ backgroundColor: '#000000' }}>
+        <Cursor />
         {children}
       </body>
     </html>

@@ -1,118 +1,111 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap');
+@import url('https://googleapis.com');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
 html {
   scroll-behavior: smooth;
+  background-color: #000000;
 }
 
-html,
 body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-
-  background-color: #000000;
-  color: #ffffff;
-
-  font-family: 'Space Grotesk', sans-serif;
-
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  text-rendering: optimizeLegibility;
-}
-
-/* ROOT NEXT */
-#__next {
-  min-height: 100vh;
-}
-
-/* VÍDEO FIXO */
-.fixed-video-bg {
-  position: fixed;
-  inset: 0;
-
-  width: 100vw;
-  height: 100vh;
-
-  overflow: hidden;
-
-  z-index: 0;
-
-  background-color: #000000;
-
-  pointer-events: none;
-}
-
-/* ELEMENTO DE VÍDEO */
-.video-element {
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  opacity: 0.28;
-
-  pointer-events: none;
-}
-
-/* OVERLAY CINEMÁTICO */
-.video-overlay {
-  position: absolute;
-  inset: 0;
-
-  background:
-    radial-gradient(
-      circle at center,
-      rgba(0, 0, 0, 0.08) 0%,
-      rgba(0, 0, 0, 0.92) 100%
-    );
-
-  pointer-events: none;
-}
-
-/* SCROLLBAR */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
   background: #000000;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #222222;
-  border-radius: 999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #3a3a3a;
-}
-
-/* SELEÇÃO */
-::selection {
-  background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
+  overflow-x: hidden;
 }
 
-/* PERFORMANCE */
-video,
-img {
+@media (min-width: 768px) {
+  html, body, a, button, input, [role="button"], .premium-project-card, video {
+    cursor: none !important;
+  }
+}
+
+/* CURSOR EM MODO INVERSÃO DIRETAMENTE TRATADO */
+.luxury-invert-pointer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ffffff !important;
+  pointer-events: none;
+  z-index: 999999;
+  mix-blend-mode: difference !important;
   will-change: transform;
-  transform: translateZ(0);
-  backface-visibility: hidden;
+  transform: translate3d(-100px, -100px, 0);
+  display: block !important;
 }
 
-/* REMOVE TAP HIGHLIGHT MOBILE */
-* {
-  -webkit-tap-highlight-color: transparent;
+.cursor-hover-active {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+/* TEXTOS COM INVERSÃO REAL DE COR (MISTURA DIRETAMENTE COM O VÍDEO) */
+.blend-mode-title {
+  mix-blend-mode: difference !important;
+  color: #ffffff !important;
+}
+
+/* REVEAL ADAPTADO PARA MOTION DESIGN (ENTRA E SAI DE CENA NO SCROLL) */
+.reveal-item {
+  opacity: 0 !important;
+  transform: translateY(80px);
+  filter: blur(15px);
+  transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
+              transform 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+              filter 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: opacity, transform, filter;
+}
+
+.reveal-visible {
+  opacity: 1 !important;
+  transform: translateY(0px);
+  filter: blur(0px);
+}
+
+.spotify-search-container {
+  transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+}
+
+/* BRILHO ATRÁS DO VÍDEO DO GRID */
+.grid-glow-layer {
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  top: -25%;
+  left: -25%;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.18) 0%, transparent 60%);
+  z-index: 1;
+  pointer-events: none;
+  transform: translate3d(0, 0, 0);
+  opacity: 0;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  will-change: transform, opacity;
+}
+
+.premium-project-card:hover .grid-glow-layer {
+  opacity: 1;
+  transform: translate3d(var(--mx, 0px), var(--my, 0px), 0) scale(1.05);
+}
+
+.premium-project-card {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.premium-project-card:hover {
+  transform: translateY(-6px);
+}
+
+.grid-video-media {
+  border-radius: 24px !important;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
 }

@@ -1,525 +1,229 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import {
-  ArrowDown,
-  Phone,
-  Mail,
-  ArrowUp,
-  Search,
-  X,
-} from 'lucide-react';
+import { Search, X } from 'lucide-react';
+import Hero from '@/components/Hero';
 
 const TRANSLATIONS = {
   en: {
-    subtitle: 'HIGH-END VIDEO EDITING / MOTION DESIGN',
-    titleLine1: 'ZULBROL / EDITING EMOTION',
-    titleLine2: 'INTO MOTION.',
-    btnProjects: 'View Projects',
-    selectedWork: 'Selected Work',
-    searchPlaceholder: 'Which Service Do You Desire?',
-    connect: 'CONNECT',
-    brief: "Let's shape your next visual piece.",
+    subtitle: 'editing emotion into motion',
+    btnProjects: 'view projects',
+    selectedWork: 'selected work',
+    searchPlaceholder: 'what do you desire?',
+    connect: 'entre em contato',
     footer: 'AVAILABLE WORLDWIDE',
   },
   pt: {
-    subtitle: 'EDIÇÃO DE VÍDEO HIGH-END / MOTION DESIGN',
-    titleLine1: 'ZULBROL / EDITING EMOTION',
-    titleLine2: 'INTO MOTION.',
-    btnProjects: 'Ver Projetos',
-    selectedWork: 'Trabalhos Selecionados',
-    searchPlaceholder: 'Qual Serviço Você Deseja?',
-    connect: 'CONTATO',
-    brief: 'Vamos dar forma à sua próxima obra visual.',
+    subtitle: 'editando sua emoção em movimento',
+    btnProjects: 'ver projetos',
+    selectedWork: 'trabalhos selecionados',
+    searchPlaceholder: 'qual serviço você deseja?',
+    connect: 'entre em contato',
     footer: 'DISPONÍVEL MUNDIALMENTE',
   },
 };
 
 const PROJECTS = [
-  {
-    id: 1,
-    title: 'MONOLITH',
-    category: 'DIRECTION / MOTION',
-    year: '2026',
-    thumb: '/thumbs/project1.jpg',
-    video: '/videos/project1.mp4',
-    tags: ['motion', 'direction', 'edição', 'video'],
-  },
-  {
-    id: 2,
-    title: 'SILK FLOW',
-    category: 'FLUID CGI / VFX',
-    year: '2026',
-    thumb: '/thumbs/project2.jpg',
-    video: '/videos/project2.mp4',
-    tags: ['vfx', 'cgi', 'fluid', 'simulação'],
-  },
-  {
-    id: 3,
-    title: 'ECHOES',
-    category: 'CINEMATIC EDITING',
-    year: '2025',
-    thumb: '/thumbs/project3.jpg',
-    video: '/videos/project3.mp4',
-    tags: ['editing', 'cinematic', 'edição', 'pós'],
-  },
-  {
-    id: 4,
-    title: 'DARK MATTER',
-    category: 'POST-PRODUCTION',
-    year: '2025',
-    thumb: '/thumbs/project4.jpg',
-    video: '/videos/project4.mp4',
-    tags: ['post', 'vfx', 'production', 'pós-produção'],
-  },
+  { id: 1, title: 'MONOLITH', category: 'DIRECTION / MOTION', year: '2026', thumb: '/thumbs/project1.jpg', video: '/videos/project1.webm' },
+  { id: 2, title: 'SILK FLOW', category: 'FLUID CGI / VFX', year: '2026', thumb: '/thumbs/project2.jpg', video: '/videos/project2.webm' },
+  { id: 3, title: 'ECHOES', category: 'CINEMATIC EDITING', year: '2025', thumb: '/thumbs/project3.jpg', video: '/videos/project3.webm' },
+  { id: 4, title: 'DARK MATTER', category: 'POST-PRODUCTION', year: '2025', thumb: '/thumbs/project4.jpg', video: '/videos/project4.webm' },
 ];
 
 export default function Home() {
   const [lang, setLang] = useState<'en' | 'pt'>('pt');
   const [searchQuery, setSearchQuery] = useState('');
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
-
-  const customCursorRef = useRef<HTMLDivElement>(null);
+  const [scrolledPastHero, setScrolledPastHero] = useState(false);
+  const videoRef1 = useRef<HTMLVideoElement>(null);
+  const videoRef3 = useRef<HTMLVideoElement>(null);
 
   const t = TRANSLATIONS[lang];
 
   const filteredProjects = PROJECTS.filter((project) => {
-    const query = searchQuery.toLowerCase();
-
-    return (
-      project.title.toLowerCase().includes(query) ||
-      project.category.toLowerCase().includes(query) ||
-      project.tags.some((tag) => tag.includes(query))
-    );
+    return project.title.toLowerCase().includes(searchQuery.toLowerCase()) || project.category.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  // CURSOR FLUIDO PREMIUM
   useEffect(() => {
-    const cursor = customCursorRef.current;
+    if (videoRef1.current) videoRef1.current.play().catch((e) => console.log(e));
+    if (videoRef3.current) videoRef3.current.play().catch((e) => console.log(e));
+  }, []);
 
-    if (!cursor) return;
-
-    let currentX = -100;
-    let currentY = -100;
-
-    let targetX = -100;
-    let targetY = -100;
-
-    const speed = 0.14;
-
-    const animate = () => {
-      currentX += (targetX - currentX) * speed;
-      currentY += (targetY - currentY) * speed;
-
-      cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-
-      requestAnimationFrame(animate);
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolledPastHero(window.scrollY > window.innerHeight * 0.3);
     };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-    const moveCursor = (e: MouseEvent) => {
-      targetX = e.clientX - 7;
-      targetY = e.clientY - 7;
-    };
-
-    const handleMouseEnter = () => {
-      cursor.classList.add('cursor-hover-active');
-    };
-
-    const handleMouseLeave = () => {
-      cursor.classList.remove('cursor-hover-active');
-    };
-
-    window.addEventListener('mousemove', moveCursor);
-
-    const interactives = document.querySelectorAll(
-      'a, button, input, .project-card'
-    );
-
-    interactives.forEach((el) => {
-      el.addEventListener('mouseenter', handleMouseEnter);
-      el.addEventListener('mouseleave', handleMouseLeave);
-    });
-
-    animate();
-
-    return () => {
-      window.removeEventListener('mousemove', moveCursor);
-
-      interactives.forEach((el) => {
-        el.removeEventListener('mouseenter', handleMouseEnter);
-        el.removeEventListener('mouseleave', handleMouseLeave);
-      });
-    };
-  }, [filteredProjects]);
-
-  // SCROLL REVEAL
   useEffect(() => {
     const reveals = document.querySelectorAll('.reveal-item');
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('reveal-visible');
+          } else {
+            entry.target.classList.remove('reveal-visible');
           }
         });
       },
-      {
-        threshold: 0.1,
-        rootMargin: '0px 0px -5% 0px',
-      }
+      { threshold: 0.01, rootMargin: '-2% 0px -2% 0px' }
     );
-
     reveals.forEach((el) => observer.observe(el));
+    return () => reveals.forEach((el) => observer.unobserve(el));
+  }, [filteredProjects, lang]);
 
-    return () => {
-      reveals.forEach((el) => observer.unobserve(el));
-    };
-  }, [filteredProjects]);
+  const handleMouseMoveCard = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    card.style.setProperty('--mx', `${x * 0.25}px`);
+    card.style.setProperty('--my', `${y * 0.25}px`);
+  };
 
   return (
-    <main
-      style={{
-        minHeight: '100vh',
-        width: '100%',
-        position: 'relative',
-        backgroundColor: '#000000',
-        color: '#ffffff',
-        display: 'flex',
-        flexDirection: 'column',
-        overflowX: 'hidden',
-      }}
-    >
-      {/* ESTILOS GLOBAIS */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-          
-          @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500&family=Libre+Baskerville:wght@400;700&display=swap');
+    <div style={{ minHeight: '100vh', width: '100%', position: 'relative', display: 'flex', flexDirection: 'column', backgroundColor: '#000000' }}>
+      
+      {/* VÍDEO DO BLOCO 1 */}
+      <video ref={videoRef1} autoPlay muted loop playsInline preload="auto" style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', objectFit: 'cover', opacity: 0.9, zIndex: 1, pointerEvents: 'none' }}>
+        <source src="/videos/bg-fluid.webm" type="video/webm" />
+      </video>
 
-          html {
-            scroll-behavior: smooth;
-          }
-
-          body {
-            background: #000;
-          }
-
-          @media (min-width: 768px) {
-            html,
-            body,
-            a,
-            button,
-            input,
-            [role="button"] {
-              cursor: none !important;
-            }
-          }
-
-          .smooth-media {
-            transition:
-              opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-          }
-
-          .search-input:focus {
-            outline: none;
-            border-color: rgba(255,255,255,0.25);
-            background-color: rgba(15,15,15,0.9);
-            box-shadow: 0 0 40px rgba(255,255,255,0.03);
-          }
-
-          .contact-row:hover {
-            opacity: 0.65;
-          }
-
-          .cursor-hover-active {
-            width: 42px !important;
-            height: 42px !important;
-            border: 1px solid rgba(255,255,255,0.9);
-            background: transparent !important;
-          }
-
-          .reveal-item {
-            opacity: 0;
-            transform: translateY(50px) scale(0.97);
-            filter: blur(8px);
-
-            transition:
-              opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 1s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 1s cubic-bezier(0.16, 1, 0.3, 1);
-
-            will-change: opacity, transform, filter;
-          }
-
-          .reveal-visible {
-            opacity: 1;
-            transform: translateY(0px) scale(1);
-            filter: blur(0px);
-          }
-
-        `,
-        }}
-      />
-
-      {/* CURSOR */}
-      <div
-        ref={customCursorRef}
-        id="luxury-pointer"
-        className="hidden md:block"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '14px',
-          height: '14px',
-          borderRadius: '999px',
-          backgroundColor: '#ffffff',
-          pointerEvents: 'none',
-          zIndex: 999999,
-          willChange: 'transform',
-          transform: 'translate3d(-100px,-100px,0)',
-          transition:
-            'width 0.25s cubic-bezier(0.16,1,0.3,1), height 0.25s cubic-bezier(0.16,1,0.3,1), border 0.25s cubic-bezier(0.16,1,0.3,1), background-color 0.25s cubic-bezier(0.16,1,0.3,1)',
-          boxShadow: '0 0 24px rgba(255,255,255,0.45)',
-        }}
-      />
-
-      {/* BACKGROUND VIDEO */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          overflow: 'hidden',
-          zIndex: 0,
-          backgroundColor: '#000000',
-          pointerEvents: 'none',
-        }}
-      >
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            opacity: 0.28,
-            pointerEvents: 'none',
-          }}
-        >
-          <source src="/videos/bg-fluid.mp4" type="video/mp4" />
-        </video>
-
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'radial-gradient(circle at center, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.92) 100%)',
-          }}
-        />
-      </div>
-
-      {/* HEADER */}
-      <header
-        className="reveal-item"
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '24px 48px',
-          background: 'transparent',
-          zIndex: 50,
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          backdropFilter: 'blur(8px)',
-        }}
-      >
-        <a
-          href="#"
-          style={{
-            fontFamily: "'League Spartan', sans-serif",
-            textDecoration: 'none',
-            color: '#ffffff',
-            fontSize: '20px',
-            fontWeight: 300,
-            textTransform: 'uppercase',
-            letterSpacing: '2px',
-          }}
-        >
-          ZULBROL
-        </a>
-
-        <nav
-          style={{
-            display: 'flex',
-            gap: '32px',
-            letterSpacing: '3px',
-            textTransform: 'uppercase',
-            fontSize: '10px',
-            fontFamily: "'League Spartan', sans-serif",
-          }}
-        >
-          <a
-            href="#projects"
-            style={{
-              textDecoration: 'none',
-              color: '#a3a3a3',
-            }}
-          >
-            PROJECTS
-          </a>
-
-          <a
-            href="#contact"
-            style={{
-              textDecoration: 'none',
-              color: '#a3a3a3',
-            }}
-          >
-            CONTACT
-          </a>
+      {/* HEADER CALIBRADO - PRESO DENTRO DOS LIMITES SEGUROS DE LARGURA DA TELA */}
+      <header style={{ width: 'calc(100% - 96px)', maxWidth: '1400px', display: 'grid', gridTemplateColumns: '200px 1fr 200px', alignItems: 'center', padding: '32px 0', background: 'transparent', zIndex: 100, position: 'fixed', top: 0, left: '48px', right: '48px', margin: '0 auto', mixBlendMode: 'difference' }}>
+        {/* Coluna 1: Logo */}
+        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+          <a href="#" style={{ fontFamily: "'Syne', sans-serif", textDecoration: 'none', color: '#ffffff', fontSize: '20px', fontWeight: 700, letterSpacing: '-1px' }}>ZULBROL</a>
+        </div>
+        
+        {/* Coluna 2: Menu perfeitamente centralizado */}
+        <nav style={{ display: 'flex', gap: '24px', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 400, justifyContent: 'center' }}>
+          <a href="#projects" style={{ textDecoration: 'none', color: '#ffffff' }}>{lang === 'pt' ? 'projetos.' : 'projects.'}</a>
+          <span style={{ opacity: 0.3 }}>X</span>
+          <a href="#contact" style={{ textDecoration: 'none', color: '#ffffff' }}>{lang === 'pt' ? 'contato' : 'contact'}</a>
         </nav>
 
-        <div
-          style={{
-            display: 'flex',
-            gap: '12px',
-            fontSize: '11px',
-            fontFamily: "'League Spartan', sans-serif",
-            letterSpacing: '1px',
-          }}
-        >
-          <button
-            onClick={() => setLang('pt')}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: lang === 'pt' ? '#ffffff' : '#404040',
-            }}
-          >
-            PT
-          </button>
-
-          <span style={{ color: '#262626' }}>/</span>
-
-          <button
-            onClick={() => setLang('en')}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: lang === 'en' ? '#ffffff' : '#404040',
-            }}
-          >
-            EN
-          </button>
+        {/* Coluna 3: Idiomas trazidos para a esquerda e protegidos */}
+        <div style={{ display: 'flex', gap: '16px', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", justifyContent: 'flex-end', paddingRight: '12px' }}>
+          <button onClick={() => setLang('pt')} style={{ background: 'none', border: 'none', color: lang === 'pt' ? '#ffffff' : '#555', fontWeight: lang === 'pt' ? 600 : 400, padding: '4px' }}>pt</button>
+          <span style={{ opacity: 0.2, alignSelf: 'center' }}>/</span>
+          <button onClick={() => setLang('en')} style={{ background: 'none', border: 'none', color: lang === 'en' ? '#ffffff' : '#555', fontWeight: lang === 'en' ? 600 : 400, padding: '4px' }}>en</button>
         </div>
       </header>
 
-      {/* HERO */}
-      <section
-        style={{
-          height: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          textAlign: 'center',
-          position: 'relative',
-          zIndex: 10,
-          padding: '0 16px',
+      {/* BLOCO 1: HERO */}
+      <div style={{ position: 'relative', height: '100vh', width: '100%', zIndex: 10 }}>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '180px', background: 'linear-gradient(to bottom, transparent, #000000)', zIndex: 11 }} />
+        <Hero t={t} />
+      </div>
+
+      {/* BLOCO 2: SEÇÃO DE PROJETOS */}
+      <section 
+        id="projects" 
+        style={{ 
+          padding: '120px 64px', 
+          position: 'relative', 
+          zIndex: 20, 
+          width: '100%',
+          background: '#000000', 
+          borderRadius: '40px 40px 0 0',
+          boxShadow: '0 -40px 80px rgba(0,0,0,0.9)'
         }}
       >
-        <div
-          style={{
-            maxWidth: '1140px',
-            margin: '8% auto 0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <div className="reveal-item" style={{ marginBottom: '20px' }}>
-            <span
-              style={{
-                fontFamily: "'League Spartan', sans-serif",
-                fontSize: '13px',
-                letterSpacing: '6px',
-                color: '#a3a3a3',
-                display: 'block',
-                fontWeight: 300,
-              }}
-            >
-              {t.subtitle}
-            </span>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          
+          {/* BARRA DE BUSCA ANIMAÇÃO SPOTIFY */}
+          <div className="reveal-item spotify-search-container" style={{ marginBottom: '100px', width: scrolledPastHero ? '100%' : '64px', height: '64px', opacity: scrolledPastHero ? 1 : 0, margin: '0 auto 100px auto' }}>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '100%' }}>
+              <Search className="absolute text-neutral-400" style={{ strokeWidth: 2, left: scrolledPastHero ? '24px' : '20px', width: '24px', height: '24px' }} />
+              <input type="text" placeholder={scrolledPastHero ? t.searchPlaceholder : ''} disabled={!scrolledPastHero} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} style={{ width: '100%', height: '100%', padding: '0 64px', background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '50px', color: '#ffffff', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '16px' }} />
+            </div>
           </div>
 
-          <div className="reveal-item" style={{ marginBottom: '48px' }}>
-            <h1
-              style={{
-                fontFamily: "'League Spartan', sans-serif",
-                fontSize: 'clamp(3rem, 7.5vw, 7.5rem)',
-                fontWeight: 300,
-                lineHeight: 1.1,
-                textTransform: 'uppercase',
-                letterSpacing: '-3px',
-              }}
-            >
-              {t.titleLine1}
-
-              <br />
-
-              <span
-                style={{
-                  fontFamily: "'Libre Baskerville', serif",
-                  fontWeight: 400,
-                  color: '#666666',
-                  display: 'block',
-                  marginTop: '14px',
-                  textTransform: 'lowercase',
-                }}
-              >
-                {t.titleLine2}
-              </span>
-            </h1>
+          <div className="reveal-item" style={{ marginBottom: '64px' }}>
+            <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '18px', textTransform: 'uppercase', color: '#ffffff', letterSpacing: '1px' }}>{t.selectedWork}</h2>
           </div>
 
-          <div className="reveal-item">
-            <a
-              href="#projects"
-              style={{
-                fontFamily: "'League Spartan', sans-serif",
-                fontSize: '12px',
-                letterSpacing: '3px',
-                textDecoration: 'none',
-                color: '#ffffff',
-                borderBottom: '1px solid rgba(255,255,255,0.2)',
-                paddingBottom: '8px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '10px',
-                textTransform: 'uppercase',
-              }}
-            >
-              {t.btnProjects}
+          {/* GRID COM VIDEOS GRANDES E BRILHO NO HOVER */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(46%, 1fr))', gap: '80px 48px' }}>
+            {filteredProjects.map((project) => (
+              <div key={project.id} className="premium-project-card reveal-item" onMouseMove={handleMouseMoveCard} style={{ display: 'flex', flexDirection: 'column', gap: '20px', position: 'relative' }}>
+                
+                <div className="grid-glow-layer" />
 
-              <ArrowDown
-                className="w-3.5 h-3.5"
-                style={{ strokeWidth: 1.5 }}
-              />
-            </a>
+                <div className="grid-video-media" onMouseEnter={() => setHoveredProject(project.id)} onMouseLeave={() => setHoveredProject(null)} style={{ width: '100%', aspectRatio: '16/9', backgroundColor: '#050505' }}>
+                  {hoveredProject === project.id ? (
+                    <video autoPlay muted loop playsInline className="smooth-media" style={{ width: '100%', height: '100%', objectFit: 'cover' }}><source src={project.video} type="video/webm" /></video>
+                  ) : (
+                    <div className="smooth-media" style={{ width: '100%', height: '100%', backgroundImage: `url(${project.thumb})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                  )}
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: "'Plus Jakarta Sans', sans-serif", padding: '0 4px', position: 'relative', zIndex: 2 }}>
+                  <h3 style={{ fontSize: '22px', fontWeight: 500, letterSpacing: '-0.5px' }}>{project.title}</h3>
+                  <p style={{ fontSize: '13px', color: '#666' }}>{project.category}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
-    </main>
+
+      {/* BLOCO 3: ÁREA DE CONTATO - CORRIGIDO: FORCE DISPLAY GRID PARA CENTRALIZAÇÃO REAL NO MEIO */}
+      <section 
+        id="contact" 
+        style={{ 
+          position: 'relative', 
+          padding: '64px', 
+          zIndex: 20, 
+          height: '100vh', 
+          width: '100%', 
+          overflow: 'hidden',
+          display: 'grid', 
+          placeItems: 'center', /* Centraliza o card matematicamente no centro x e y */
+          backgroundColor: '#ffffff', 
+          borderRadius: '40px 40px 0 0',
+          boxShadow: '0 -40px 80px rgba(255,255,255,0.15)'
+        }}
+      >
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '140px', background: 'linear-gradient(to bottom, #000000, transparent)', zIndex: 2 }} />
+
+        {/* VÍDEO ESPELHADO INVERTIDO */}
+        <video ref={videoRef3} autoPlay muted loop playsInline preload="auto" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9, zIndex: 1, filter: 'invert(1)', pointerEvents: 'none' }}>
+          <source src="/videos/bg-fluid.webm" type="video/webm" />
+        </video>
+
+        {/* CARD PRETO DE CONTATO - PERFEITAMENTE CORRIGIDO */}
+        <div className="reveal-item" style={{ background: '#000000', width: '100%', maxWidth: '850px', borderRadius: '32px', padding: '64px', boxShadow: '0 40px 90px rgba(0,0,0,0.4)', display: 'flex', flexDirection: 'column', gap: '40px', position: 'relative', zIndex: 10, margin: 'auto' }}>
+          <div>
+            <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '36px', textTransform: 'lowercase', color: '#ffffff', textAlign: 'center', fontWeight: 700, letterSpacing: '-1px' }}>
+              {t.connect}
+            </h2>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '20px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <span style={{ fontSize: '12px', color: '#555', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>WHATSAPP:</span>
+              <a href="tel:+5511999999999" style={{ color: '#ffffff', textDecoration: 'none', fontWeight: 400 }}>+55 (11) 99999-9999</a>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <span style={{ fontSize: '12px', color: '#555', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>GMAIL:</span>
+              <a href="mailto:contato@zulbrol.com" style={{ color: '#ffffff', textDecoration: 'none', fontWeight: 400 }}>contato@zulbrol.com</a>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ width: 'calc(100% - 128px)', maxWidth: '1400px', position: 'absolute', bottom: '40px', left: '50%', transform: 'translateX(-50%)', padding: '0', zIndex: 10 }}>
+          <footer style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', fontFamily: "'Plus Jakarta Sans', sans-serif", color: '#444', fontWeight: 500 }}>
+            <span>{t.footer}</span>
+            <span>© {new Date().getFullYear()} ZULBROL</span>
+          </footer>
+        </div>
+      </section>
+    </div>
   );
 }
