@@ -1,361 +1,98 @@
 'use client';
 
-import {
-  ArrowDown,
-  Mail,
-  Phone,
-  Globe,
-} from 'lucide-react';
-
+import { Mail, Phone } from 'lucide-react';
+import { useRef, useEffect } from 'react';
 import Reveal from './Reveal';
 
-export default function Contact() {
+interface ContactProps {
+  t: { connect: string; footer: string; };
+  playSound: (type: 'click' | 'whoosh') => void;
+}
+
+export default function Contact({ t, playSound }: ContactProps) {
+  const videoRef3 = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef3.current) {
+      videoRef3.current.play().catch((e) => console.log(e));
+    }
+  }, []);
+
   return (
-    <section
-      id="contact"
-      style={{
-        position: 'relative',
+    <section id="contact" style={{ position: 'relative', padding: '64px', zIndex: 20, height: '100vh', width: '100%', overflow: 'hidden', display: 'grid', placeItems: 'center', backgroundColor: '#000000', borderRadius: '40px 40px 0 0', boxShadow: '0 -40px 80px rgba(255,255,255,0.15)' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '140px', background: 'linear-gradient(to bottom, #000000, transparent)', zIndex: 2 }} />
 
-        width: '100%',
+      <video ref={videoRef3} autoPlay muted loop playsInline preload="metadata" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 1, zIndex: 1, filter: 'invert(1)', pointerEvents: 'none' }}>
+        <source src="/videos/bg-fluid.webm" type="video/webm" />
+      </video>
 
-        padding:
-          '160px clamp(24px,4vw,64px) 120px',
-
-        zIndex: 20,
-      }}
-    >
-      <div
-        style={{
-          width: '100%',
-          maxWidth: '1400px',
-
-          margin: '0 auto',
-        }}
-      >
-        {/* TITLE */}
+      <div className="contact-card" style={{ background: '#000000', width: '100%', maxWidth: '850px', borderRadius: '32px', padding: '48px 54px', boxShadow: '0 40px 90px rgba(0,0,0,0.4)', display: 'flex', flexDirection: 'column', gap: '32px', position: 'relative', zIndex: 10, margin: 'auto' }}>
+        
         <Reveal>
-          <div
-            style={{
-              marginBottom: '70px',
-            }}
-          >
-            <span
-              style={{
-                fontFamily:
-                  "'League Spartan', sans-serif",
-
-                fontSize: '12px',
-
-                letterSpacing: '6px',
-
-                textTransform: 'uppercase',
-
-                color:
-                  'rgba(255,255,255,0.58)',
-
-                display: 'block',
-
-                marginBottom: '16px',
-              }}
-            >
-              CONTACT
-            </span>
-
-            <h2
-              style={{
-                fontFamily:
-                  "'League Spartan', sans-serif",
-
-                fontSize:
-                  'clamp(3rem,6vw,6rem)',
-
-                fontWeight: 300,
-
-                lineHeight: 0.95,
-
-                letterSpacing: '-5px',
-
-                color: '#ffffff',
-              }}
-            >
-              Let’s create
-              <br />
-              something cinematic.
+          <div>
+            <h2 style={{ fontFamily: "'League Spartan', sans-serif", fontSize: '36px', textTransform: 'lowercase', color: '#ffffff', textAlign: 'center', fontWeight: 300, letterSpacing: '-1px' }}>
+              {t.connect}
             </h2>
           </div>
         </Reveal>
 
-        {/* LINKS */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-
-            gap: '18px',
-          }}
-        >
-          {/* EMAIL */}
-          <Reveal delay={0.1}>
-            <a
-              href="mailto:corteslucas432@gmail.com"
-              className="project-card"
-              style={{
-                width: '100%',
-
-                display: 'flex',
-                justifyContent:
-                  'space-between',
-                alignItems: 'center',
-
-                padding: '30px 34px',
-
-                borderRadius: '26px',
-
-                textDecoration: 'none',
-
-                background:
-                  'rgba(0,0,0,0.18)',
-
-                border:
-                  '1px solid rgba(255,255,255,0.06)',
-
-                backdropFilter:
-                  'blur(12px)',
-
-                transition:
-                  `
-                  transform .6s cubic-bezier(.16,1,.3,1),
-                  border .35s ease,
-                  box-shadow .35s ease
-                `,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform =
-                  'translateY(-6px)';
-
-                e.currentTarget.style.border =
-                  '1px solid rgba(255,255,255,0.18)';
-
-                e.currentTarget.style.boxShadow =
-                  '0 20px 60px rgba(255,255,255,0.08)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform =
-                  'translateY(0px)';
-
-                e.currentTarget.style.border =
-                  '1px solid rgba(255,255,255,0.06)';
-
-                e.currentTarget.style.boxShadow =
-                  'none';
-              }}
+        <Reveal delay={0.1}>
+          <div className="contact-links" style={{ display: 'flex', justifyContent: 'center', gap: '48px', flexWrap: 'wrap', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            <a 
+              href="https://wa.me" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              onClick={() => playSound('click')}
+              onMouseEnter={() => playSound('whoosh')}
+              style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '16px' }}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-
-                  gap: '18px',
-                }}
-              >
-                <Mail
-                  className="w-5 h-5"
-                  style={{
-                    color:
-                      'rgba(255,255,255,0.6)',
-                  }}
-                />
-
-                <span
-                  style={{
-                    fontFamily:
-                      "'League Spartan', sans-serif",
-
-                    fontSize:
-                      'clamp(1.2rem,2vw,2rem)',
-
-                    fontWeight: 300,
-
-                    letterSpacing: '-1px',
-
-                    color: '#ffffff',
-                  }}
-                >
-                  corteslucas432@gmail.com
-                </span>
-              </div>
-
-              <ArrowDown
-                className="w-5 h-5"
-                style={{
-                  transform:
-                    'rotate(-135deg)',
-
-                  color:
-                    'rgba(255,255,255,0.7)',
-                }}
-              />
+              <Phone className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.5)' }} />
+              <span>+55 (21) 99426-4039</span>
             </a>
-          </Reveal>
 
-          {/* WHATSAPP */}
-          <Reveal delay={0.18}>
-            <a
-              href="https://wa.me/5521994264039"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="project-card"
-              style={{
-                width: '100%',
-
-                display: 'flex',
-                justifyContent:
-                  'space-between',
-                alignItems: 'center',
-
-                padding: '30px 34px',
-
-                borderRadius: '26px',
-
-                textDecoration: 'none',
-
-                background:
-                  'rgba(0,0,0,0.18)',
-
-                border:
-                  '1px solid rgba(255,255,255,0.06)',
-
-                backdropFilter:
-                  'blur(12px)',
-              }}
+            <a 
+              href="mailto:corteslucas432@gmail.com" 
+              onClick={() => playSound('click')}
+              onMouseEnter={() => playSound('whoosh')}
+              style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '16px' }}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-
-                  gap: '18px',
-                }}
-              >
-                <Phone
-                  className="w-5 h-5"
-                  style={{
-                    color:
-                      'rgba(255,255,255,0.6)',
-                  }}
-                />
-
-                <span
-                  style={{
-                    fontFamily:
-                      "'League Spartan', sans-serif",
-
-                    fontSize:
-                      'clamp(1.2rem,2vw,2rem)',
-
-                    fontWeight: 300,
-
-                    letterSpacing: '-1px',
-
-                    color: '#ffffff',
-                  }}
-                >
-                  +55 (21) 99426-4039
-                </span>
-              </div>
-
-              <ArrowDown
-                className="w-5 h-5"
-                style={{
-                  transform:
-                    'rotate(-135deg)',
-
-                  color:
-                    'rgba(255,255,255,0.7)',
-                }}
-              />
+              <Mail className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.5)' }} />
+              <span>corteslucas432@gmail.com</span>
             </a>
-          </Reveal>
+          </div>
+        </Reveal>
 
-          {/* INSTAGRAM */}
-          <Reveal delay={0.26}>
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="project-card"
-              style={{
-                width: '100%',
-
-                display: 'flex',
-                justifyContent:
-                  'space-between',
-                alignItems: 'center',
-
-                padding: '30px 34px',
-
-                borderRadius: '26px',
-
-                textDecoration: 'none',
-
-                background:
-                  'rgba(0,0,0,0.18)',
-
-                border:
-                  '1px solid rgba(255,255,255,0.06)',
-
-                backdropFilter:
-                  'blur(12px)',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-
-                  gap: '18px',
-                }}
+        {/* REDES SOCIAIS OFICIAIS ATUALIZADAS COM SUAS CONTAS CORRETAS */}
+        <Reveal delay={0.2}>
+          <div className="social-links" style={{ display: 'flex', justifyContent: 'center', gap: '24px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '28px' }}>
+            {[
+              { href: "https://www.youtube.com/@zulbrol", title: "YouTube", src: "/icons/youtube.png" },
+              { href: "https://www.instagram.com/zulbrol_oficial/", title: "Instagram", src: "/icons/instagram.png" },
+              { href: "https://open.spotify.com/intl-pt/artist/5XtilXBHYFCAxMHUC1TYfe?si=Fh84DCpRSIOFqRX385r4-A", title: "Spotify", src: "/icons/spotify.png" },
+              { href: "https://www.tiktok.com/@zulbrol.editor?is_from_webapp=1&sender_device=pc", title: "TikTok", src: "/icons/tiktok.png" }
+            ].map((social, i) => (
+              <a 
+                key={i}
+                href={social.href} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                onClick={() => playSound('click')} 
+                title={social.title} 
+                onMouseEnter={() => playSound('whoosh')}
+                style={{ width: '50px', height: '50px', borderRadius: '50%', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.08)' }}
               >
-                <Globe
-  className="w-5 h-5"
-  style={{
-    color:
-      'rgba(255,255,255,0.6)',
-  }}
-/>
+                <img src={social.src} alt={social.title} style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
+              </a>
+            ))}
+          </div>
+        </Reveal>
+      </div>
 
-                <span
-                  style={{
-                    fontFamily:
-                      "'League Spartan', sans-serif",
-
-                    fontSize:
-                      'clamp(1.2rem,2vw,2rem)',
-
-                    fontWeight: 300,
-
-                    letterSpacing: '-1px',
-
-                    color: '#ffffff',
-                  }}
-                >
-                  @zulbrol
-                </span>
-              </div>
-
-              <ArrowDown
-                className="w-5 h-5"
-                style={{
-                  transform:
-                    'rotate(-135deg)',
-
-                  color:
-                    'rgba(255,255,255,0.7)',
-                }}
-              />
-            </a>
-          </Reveal>
-        </div>
+      <div style={{ width: 'calc(100% - 128px)', maxWidth: '1400px', position: 'absolute', bottom: '40px', left: '50%', transform: 'translateX(-50%)', padding: '0', zIndex: 10 }}>
+        <footer style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', fontFamily: "'Plus Jakarta Sans', sans-serif", color: '#444', fontWeight: 500 }}>
+          <span>{t.footer}</span>
+          <span>© {new Date().getFullYear()} ZULBROL</span>
+        </footer>
       </div>
     </section>
   );

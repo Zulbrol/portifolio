@@ -13,44 +13,53 @@ export default function Cursor() {
     let currentY = -100;
     let targetX = -100;
     let targetY = -100;
+    let frameId: number | null = null;
     
     // Rastreamento físico balanceado para grudar no mouse com suavidade de motion design
-    const speed = 0.45; 
+    const speed = 0.35; 
 
     const animate = () => {
       currentX += (targetX - currentX) * speed;
       currentY += (targetY - currentY) * speed;
       cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-      requestAnimationFrame(animate);
+
+      if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) {
+        frameId = requestAnimationFrame(animate);
+      } else {
+        currentX = targetX;
+        currentY = targetY;
+        frameId = null;
+      }
     };
 
     const moveCursor = (e: MouseEvent) => {
       targetX = e.clientX - 5;
       targetY = e.clientY - 5;
+      if (frameId === null) {
+        frameId = requestAnimationFrame(animate);
+      }
     };
 
-    const handleMouseEnter = () => cursor.classList.add('cursor-hover-active');
-    const handleMouseLeave = () => cursor.classList.remove('cursor-hover-active');
+    const isInteractive = (target: EventTarget | null) =>
+      target instanceof Element && Boolean(target.closest('a, button, input, .premium-project-card'));
+
+    const handleMouseOver = (e: MouseEvent) => {
+      if (isInteractive(e.target)) cursor.classList.add('cursor-hover-active');
+    };
+
+    const handleMouseOut = (e: MouseEvent) => {
+      if (isInteractive(e.target)) cursor.classList.remove('cursor-hover-active');
+    };
 
     window.addEventListener('mousemove', moveCursor, { passive: true });
-
-    const setupListeners = () => {
-      const interactives = document.querySelectorAll('a, button, input, .premium-project-card');
-      interactives.forEach((el) => {
-        el.addEventListener('mouseenter', handleMouseEnter);
-        el.addEventListener('mouseleave', handleMouseLeave);
-      });
-    };
-
-    setupListeners();
-    animate();
-
-    const observer = new MutationObserver(setupListeners);
-    observer.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener('mouseover', handleMouseOver, { passive: true });
+    window.addEventListener('mouseout', handleMouseOut, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', moveCursor);
-      observer.disconnect();
+      window.removeEventListener('mouseover', handleMouseOver);
+      window.removeEventListener('mouseout', handleMouseOut);
+      if (frameId !== null) cancelAnimationFrame(frameId);
     };
   }, []);
 

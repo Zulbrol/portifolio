@@ -1,431 +1,258 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ArrowDown, Search, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 import Reveal from './Reveal';
 
-const PROJECTS = [
-  {
-    id: 1,
-    title: 'MONOLITH',
-    category: 'DIRECTION / MOTION',
-    year: '2026',
-    video: '/videos/project1.mp4',
-  },
+export interface Project {
+  id: number;
+  title: string;
+  category: string;
+  year: string;
+  type: 'video' | 'image';
+  src: string;
+  thumb: string;
+  aspectRatio: string;
+}
 
-  {
-    id: 2,
-    title: 'SILK FLOW',
-    category: 'FLUID CGI / VFX',
-    year: '2026',
-    video: '/videos/project2.mp4',
-  },
+const REAL_PROJECTS: Project[] = [
+  // 1. VIDEOS GEEK SHORTS (9/16)
+  { id: 1, title: 'GEEK SHORT 1', category: 'GEEK EDIT', year: '2026', type: 'video', src: '/videos/geek1.webm', thumb: '/thumbs/geek1.jpg', aspectRatio: '9/16' },
+  { id: 2, title: 'GEEK SHORT 2', category: 'GEEK EDIT', year: '2026', type: 'video', src: '/videos/geek2.webm', thumb: '/thumbs/geek2.jpg', aspectRatio: '9/16' },
+  
+  // 2. ANIME EDIT SHORT & MINECRAFT SHORT (9/16)
+  { id: 3, title: 'ANIME EDIT SHORT', category: 'ANIME EDIT', year: '2026', type: 'video', src: '/videos/anime_short.webm', thumb: '/thumbs/anime_short.jpg', aspectRatio: '9/16' },
+  
+  // 3. MINECRAFT HORIZONTAL & VÍDEO DINÂMICO HORIZONTAL (16/10)
+  { id: 6, title: 'VÍDEO DINÂMICO', category: 'VÍDEO DINÂMICO', year: '2026', type: 'video', src: '/videos/dinamico.webm', thumb: '/thumbs/dinamico.jpg', aspectRatio: '9/16' },
 
-  {
-    id: 3,
-    title: 'ECHOES',
-    category: 'CINEMATIC EDITING',
-    year: '2025',
-    video: '/videos/project3.mp4',
-  },
+  // 4. SEUS 6 WALLPAPERS SELECIONADOS (9/16)
+  { id: 7, title: 'SPACE WALLPAPER', category: 'WALLPAPER', year: '2025', type: 'image', src: '/images/wp1.jpg', thumb: '/thumbs/wp1.jpg', aspectRatio: '9/16' },
+  { id: 8, title: 'CYBERPUNK ART', category: 'WALLPAPER', year: '2025', type: 'image', src: '/images/wp2.jpg', thumb: '/thumbs/wp2.jpg', aspectRatio: '9/16' },
+  { id: 9, title: 'NEON DRIFT', category: 'WALLPAPER', year: '2026', type: 'image', src: '/images/wp3.jpg', thumb: '/thumbs/wp3.jpg', aspectRatio: '9/16' },
+  { id: 10, title: 'CHILL VIBES', category: 'WALLPAPER', year: '2025', type: 'image', src: '/images/wp4.jpg', thumb: '/thumbs/wp4.jpg', aspectRatio: '9/16' },
+  { id: 11, title: 'DARK GLOW', category: 'WALLPAPER', year: '2026', type: 'image', src: '/images/wp5.jpg', thumb: '/thumbs/wp5.jpg', aspectRatio: '9/16' },
+  { id: 12, title: 'ABSTRACT MOTION', category: 'WALLPAPER', year: '2026', type: 'image', src: '/images/wp6.jpg', thumb: '/thumbs/wp6.jpg', aspectRatio: '9/16' },
 
-  {
-    id: 4,
-    title: 'DARK MATTER',
-    category: 'POST-PRODUCTION',
-    year: '2025',
-    video: '/videos/project4.mp4',
-  },
+  // 5. SEUS 2 BANNERS PANORÂMICOS (16/5)
+  { id: 13, title: 'YOUTUBE BANNER ART', category: 'BANNER', year: '2026', type: 'image', src: '/images/banner1.jpg', thumb: '/thumbs/banner1.jpg', aspectRatio: '16/5' },
+  { id: 14, title: 'TWITCH STREAM HEADER', category: 'BANNER', year: '2026', type: 'image', src: '/images/banner2.jpg', thumb: '/thumbs/banner2.jpg', aspectRatio: '16/5' },
+
+  // 6. SUAS 2 FOTOS DE PERFIL QUADRADAS (1/1)
+  { id: 15, title: 'AVATAR CONCEPT 1', category: 'PROFILE PICTURE', year: '2026', type: 'image', src: '/images/pfp1.jpg', thumb: '/thumbs/pfp1.jpg', aspectRatio: '1/1' },
+  { id: 16, title: 'AVATAR CONCEPT 2', category: 'PROFILE PICTURE', year: '2026', type: 'image', src: '/images/pfp2.jpg', thumb: '/thumbs/pfp2.jpg', aspectRatio: '1/1' },
 ];
 
-export default function Projects() {
-  const [hovered, setHovered] = useState<number | null>(
-    null
+interface ProjectsProps {
+  t: { selectedWork: string; searchPlaceholder: string; };
+  onProjectSelect: (project: Project) => void;
+  playSound: (type: 'click' | 'whoosh') => void;
+}
+
+interface Star {
+  top: string;
+  left: string;
+  size: string;
+  duration: number;
+}
+
+const STARS: Star[] = Array.from({ length: 180 }, (_, index) => ({
+  top: `${((index * 37) % 100) + 0.15}%`,
+  left: `${((index * 61) % 100) + 0.1}%`,
+  size: `${(index % 6) * 0.28 + 0.45}px`,
+  duration: (index % 9) * 0.55 + 2.1,
+}));
+
+export default function Projects({ t, onProjectSelect, playSound }: ProjectsProps) {
+  const [hoveredProject, setHoveredProject] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const glowFrameRef = useRef<number | null>(null);
+
+  // SOLUÇÃO DA HIDRATAÇÃO: Monta no Cliente e remove o Hydration Error do console
+  const filteredProjects = REAL_PROJECTS.filter((project) =>
+    project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    project.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const [search, setSearch] = useState('');
+  const leftColumnProjects = filteredProjects.filter((_, idx) => idx % 2 === 0);
+  const rightColumnProjects = filteredProjects.filter((_, idx) => idx % 2 !== 0);
 
-  const filteredProjects = PROJECTS.filter((project) =>
-    project.title
-      .toLowerCase()
-      .includes(search.toLowerCase())
+  const handleMouseMoveCard = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+
+    if (glowFrameRef.current !== null) cancelAnimationFrame(glowFrameRef.current);
+    glowFrameRef.current = requestAnimationFrame(() => {
+      card.style.setProperty('--mx', `${x * 0.3}px`);
+      card.style.setProperty('--my', `${y * 0.3}px`);
+    });
+  };
+
+  const renderCard = (project: Project, index: number) => (
+    <Reveal key={project.id} delay={index * 0.05}>
+      <div
+        className="premium-project-card"
+        onMouseMove={handleMouseMoveCard}
+        onClick={() => { onProjectSelect(project); playSound('click'); }}
+        onMouseEnter={() => { setHoveredProject(project.id); playSound('whoosh'); }}
+        onMouseLeave={() => setHoveredProject(null)}
+        style={{ position: 'relative', width: '85%', maxWidth: '520px', maxHeight: '68vh', aspectRatio: project.aspectRatio, overflow: 'visible', borderRadius: '32px', background: 'rgba(5,5,5,0.4)', transition: 'transform .8s cubic-bezier(.16,1,.3,1), border .5s ease, box-shadow .5s ease', cursor: 'pointer', marginBottom: '64px', border: '1px solid rgba(255,255,255,0.03)', marginInline: 'auto', contentVisibility: 'auto', containIntrinsicSize: '520px 720px' }}
+      >
+        <div
+          className="grid-glow-layer"
+          style={{
+            width: '190%',
+            height: '190%',
+            top: '-45%',
+            left: '-45%',
+            zIndex: 0,
+            background:
+              'radial-gradient(circle at center, rgba(255,255,255,0.48) 0%, rgba(255,255,255,0.16) 28%, transparent 62%), radial-gradient(circle at center, rgba(125,205,255,0.22) 0%, transparent 48%)',
+          }}
+        />
+
+        <div className="grid-video-media" style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
+          <img 
+            src={project.thumb} 
+            alt={project.title}
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              objectFit: 'cover', 
+              opacity: hoveredProject === project.id ? 0.75 : 0.45, 
+              transform: hoveredProject === project.id ? 'scale(1.03)' : 'scale(1)',
+              transition: 'opacity 0.4s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)' 
+            }} 
+          />
+        </div>
+
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent 50%)', zIndex: 6 }} />
+
+        {/* TEXTO TOP */}
+        <div style={{ position: 'relative', zIndex: 20, display: 'flex', justifyContent: 'space-between', padding: '28px' }}>
+          <span style={{ fontFamily: "'League Spartan', sans-serif", fontSize: '12px', letterSpacing: '3px', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>{project.year}</span>
+          <ArrowDown className="w-4 h-4" style={{ transform: 'rotate(-135deg)', color: 'rgba(255,255,255,0.7)', strokeWidth: 2 }} />
+        </div>
+
+        {/* TEXTO BOTTOM */}
+        <div style={{ position: 'absolute', left: '32px', bottom: '32px', zIndex: 20 }}>
+          <span style={{ display: 'block', marginBottom: '8px', fontFamily: "'League Spartan', sans-serif", fontSize: '11px', letterSpacing: '3px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>
+            {project.category}
+          </span>
+          <h3 style={{ fontFamily: "'League Spartan', sans-serif", fontSize: 'clamp(1.4rem,2vw,2.4rem)', fontWeight: 400, letterSpacing: '-1px', color: '#ffffff', textTransform: 'uppercase' }}>
+            {project.title}
+          </h3>
+        </div>
+      </div>
+    </Reveal>
   );
 
   return (
-    <section
-      id="projects"
-      style={{
-        position: 'relative',
-
-        width: '100%',
-
-        padding:
-          '140px clamp(24px,4vw,64px) 120px',
-
-        zIndex: 20,
-      }}
-    >
-      {/* TITLE */}
-      <Reveal>
-        <div
-          style={{
-            marginBottom: '70px',
-
-            textAlign: 'center',
-          }}
-        >
-          <span
-            style={{
-              fontFamily:
-                "'League Spartan', sans-serif",
-
-              fontSize: '12px',
-
-              letterSpacing: '6px',
-
-              textTransform: 'uppercase',
-
-              color: 'rgba(255,255,255,0.58)',
-            }}
-          >
-            SELECTED WORK
-          </span>
-
-          <h2
-            style={{
-              marginTop: '18px',
-
-              fontFamily:
-                "'League Spartan', sans-serif",
-
-              fontSize:
-                'clamp(3rem,6vw,5rem)',
-
-              fontWeight: 300,
-
-              letterSpacing: '-4px',
-
-              color: '#ffffff',
-            }}
-          >
-            Featured Projects
-          </h2>
-        </div>
-      </Reveal>
-
-      {/* SEARCH */}
-      <Reveal delay={0.1}>
-        <div
-          style={{
-            width: '100%',
-
-            display: 'flex',
-            justifyContent: 'center',
-
-            marginBottom: '90px',
-          }}
-        >
+    <section id="projects" style={{ position: 'relative', width: '100%', padding: '140px clamp(24px,4vw,64px) 120px', zIndex: 20, backgroundColor: '#000000', borderRadius: '40px 40px 0 0', boxShadow: '0 -40px 80px rgba(0,0,0,0.9)', overflow: 'hidden' }}>
+      
+      {/* CÉU ESTRELADO CORRIGIDO */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
+        {STARS.map((star, idx) => (
           <div
-            style={{
-              position: 'relative',
-
-              width: '100%',
-              maxWidth: '620px',
+            key={idx}
+            className="star-particle"
+            style={{ 
+              position: 'absolute', 
+              top: star.top, 
+              left: star.left, 
+              width: star.size, 
+              height: star.size, 
+              backgroundColor: '#ffffff', 
+              borderRadius: '50%',
+              animationDuration: `${star.duration}s`,
+              animationDelay: `${idx * -0.13}s`,
             }}
-          >
-            <input
-              value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
-              placeholder="Search project..."
-              style={{
-                width: '100%',
-
-                height: '64px',
-
-                padding:
-                  '0 58px 0 58px',
-
-                borderRadius: '999px',
-
-                border:
-                  '1px solid rgba(255,255,255,0.08)',
-
-                background:
-                  'rgba(0,0,0,0.22)',
-
-                backdropFilter: 'blur(12px)',
-
-                color: '#ffffff',
-
-                outline: 'none',
-
-                fontFamily:
-                  "'League Spartan', sans-serif",
-
-                fontSize: '14px',
-
-                letterSpacing: '2px',
-              }}
-            />
-
-            <Search
-              className="w-4 h-4"
-              style={{
-                position: 'absolute',
-
-                left: '24px',
-                top: '50%',
-
-                transform:
-                  'translateY(-50%)',
-
-                color: '#8a8a8a',
-              }}
-            />
-
-            {search && (
-              <button
-                onClick={() => setSearch('')}
-                style={{
-                  position: 'absolute',
-
-                  right: '24px',
-                  top: '50%',
-
-                  transform:
-                    'translateY(-50%)',
-
-                  background: 'none',
-                  border: 'none',
-
-                  color: '#8a8a8a',
-                }}
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-        </div>
-      </Reveal>
-
-      {/* GRID */}
-      <div
-        style={{
-          display: 'grid',
-
-          gridTemplateColumns:
-'repeat(2, minmax(0, 1fr))',
-
-          gap: '42px',
-        }}
-      >
-        {filteredProjects.map(
-          (project, index) => (
-            <Reveal
-              key={project.id}
-              delay={index * 0.08}
-            >
-              <div
-                className="project-card"
-                onMouseEnter={() =>
-                  setHovered(project.id)
-                }
-                onMouseLeave={() =>
-                  setHovered(null)
-                }
-                style={{
-                  position: 'relative',
-
-                  aspectRatio: '16 / 10',
-
-                  overflow: 'hidden',
-
-                  borderRadius: '32px',
-
-                  background:
-                    'rgba(0,0,0,0.18)',
-
-                  border:
-                    hovered === project.id
-                      ? '1px solid rgba(255,255,255,0.22)'
-                      : '1px solid rgba(255,255,255,0.06)',
-
-                  backdropFilter:
-                    'blur(14px)',
-
-                  transition:
-                    `
-                    transform .8s cubic-bezier(.16,1,.3,1),
-                    border .5s ease,
-                    box-shadow .5s ease
-                  `,
-
-                  transform:
-                    hovered === project.id
-                      ? 'translateY(-10px)'
-                      : 'translateY(0px)',
-
-                  boxShadow:
-                    hovered === project.id
-                      ? `
-                        0 20px 80px rgba(255,255,255,0.12),
-                        0 0 50px rgba(255,255,255,0.06)
-                      `
-                      : `
-                        0 10px 40px rgba(0,0,0,0.42)
-                      `,
-                }}
-              >
-                {/* VIDEO */}
-                <video
-                  src={project.video}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="auto"
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-
-                    width: '100%',
-                    height: '100%',
-
-                    objectFit: 'cover',
-
-                    opacity:
-                      hovered === project.id
-                        ? 0.42
-                        : 0.18,
-
-                    transition:
-                      'opacity .7s ease, transform 1.4s cubic-bezier(.16,1,.3,1)',
-
-                    transform:
-                      hovered === project.id
-                        ? 'scale(1.05)'
-                        : 'scale(1)',
-                  }}
-                />
-
-                {/* GRADIENT */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-
-                    background:
-                      `
-                    linear-gradient(
-                      to top,
-                      rgba(0,0,0,0.75),
-                      transparent 45%
-                    )
-                  `,
-                  }}
-                />
-
-                {/* TOP */}
-                <div
-                  style={{
-                    position: 'relative',
-
-                    zIndex: 20,
-
-                    display: 'flex',
-                    justifyContent:
-                      'space-between',
-
-                    padding: '28px',
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily:
-                        "'League Spartan', sans-serif",
-
-                      fontSize: '12px',
-
-                      letterSpacing: '3px',
-
-                      color:
-                        'rgba(255,255,255,0.7)',
-                    }}
-                  >
-                    {project.year}
-                  </span>
-
-                  <ArrowDown
-                    className="w-4 h-4"
-                    style={{
-                      transform:
-                        'rotate(-135deg)',
-
-                      color:
-                        'rgba(255,255,255,0.7)',
-                    }}
-                  />
-                </div>
-
-                {/* BOTTOM */}
-                <div
-                  style={{
-                    position: 'absolute',
-
-                    left: '32px',
-                    bottom: '32px',
-
-                    zIndex: 20,
-                  }}
-                >
-                  <span
-                    style={{
-                      display: 'block',
-
-                      marginBottom: '8px',
-
-                      fontFamily:
-                        "'League Spartan', sans-serif",
-
-                      fontSize: '11px',
-
-                      letterSpacing: '3px',
-
-                      textTransform:
-                        'uppercase',
-
-                      color:
-                        'rgba(255,255,255,0.65)',
-                    }}
-                  >
-                    {project.category}
-                  </span>
-
-                  <h3
-                    style={{
-                      fontFamily:
-                        "'League Spartan', sans-serif",
-
-                      fontSize:
-                        'clamp(2rem,3vw,3rem)',
-
-                      fontWeight: 300,
-
-                      letterSpacing: '-2px',
-
-                      color: '#ffffff',
-                    }}
-                  >
-                    {project.title}
-                  </h3>
-                </div>
-              </div>
-            </Reveal>
-          )
-        )}
+          />
+        ))}
       </div>
-    </section>
-  );
+
+      {/* CONTEÚDO DA GRID E BUSCA INTEGRADOS */}
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+        
+        
+        {/* BARRA DE BUSCA COM ÍCONES SINTATICAMENTE CORRETOS */}
+        <motion.div
+          className="project-search"
+          initial={{ opacity: 0, y: 54, scale: 0.92, width: '220px' }}
+          whileInView={{ opacity: 1, y: 0, scale: 1, width: 'min(760px, 100%)' }}
+          viewport={{ once: false, amount: 0.8 }}
+          transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
+          style={{ position: 'relative', marginBottom: '96px', height: '72px', maxWidth: '760px' }}
+        >
+          <input 
+            type="text" 
+            placeholder={t?.searchPlaceholder} 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ width: '100%', height: '100%', padding: '0 64px 0 68px', borderRadius: '999px', background: 'rgba(255,255,255,0.055)', border: '1px solid rgba(255,255,255,0.12)', color: '#ffffff', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '17px', outline: 'none', boxShadow: '0 24px 80px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.08)' }}
+          />
+          <Search style={{ position: 'absolute', left: '28px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.38)', width: '22px', height: '22px' }} />
+          {searchQuery && (
+  <X
+    onClick={() => setSearchQuery('')}
+    style={{
+      position: 'absolute',
+      right: '28px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      color: 'rgba(255,255,255,0.5)',
+      width: '18px',
+      height: '18px',
+      cursor: 'pointer',
+    }}
+  />
+)}
+</motion.div>
+
+{/* BLOCO 2: GRID COM AS DUAS COLUNAS */}
+<div
+  className="project-grid"
+  style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+    gap: '32px',
+    width: '100%',
+    maxWidth: '1400px',
+    marginInline: 'auto',
+  }}
+>
+  {/* Coluna Esquerda */}
+  <div
+    className="project-column"
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+    }}
+  >
+    {leftColumnProjects.map((project, index) =>
+      renderCard(project, index)
+    )}
+  </div>
+
+  {/* Coluna Direita */}
+  <div
+    className="project-column project-column-offset"
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      marginTop: '32px',
+    }}
+  >
+    {rightColumnProjects.map((project, index) =>
+      renderCard(project, index)
+    )}
+  </div>
+</div>
+
+</div>
+</section>
+);
 }

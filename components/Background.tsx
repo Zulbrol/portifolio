@@ -1,29 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-
 export default function Background() {
-  const [mounted, setMounted] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  // Garante que o componente só renderize após a página carregar no navegador
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (mounted && videoRef.current) {
-      videoRef.current.play().catch((err) => {
-        console.log("Auto-play do vídeo de fundo foi bloqueado ou falhou:", err);
-      });
-    }
-  }, [mounted]);
-
-  // Se ainda estiver carregando no servidor, mostra apenas a tela preta de transição
-  if (!mounted) {
-    return <div style={{ position: 'fixed', inset: 0, backgroundColor: '#000000', zIndex: -1 }} />;
-  }
-
   return (
     <div
       style={{
@@ -33,30 +10,28 @@ export default function Background() {
         width: '100vw',
         height: '100vh',
         overflow: 'hidden',
-        zIndex: -1, // Garante que fique atrás de todo o conteúdo do site
+        zIndex: -1,
         backgroundColor: '#000000',
         pointerEvents: 'none',
       }}
     >
       <video
-        ref={videoRef}
         autoPlay
         muted
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         style={{
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-          opacity: 0.28, // Controla a opacidade do vídeo para não atrapalhar a leitura do texto
+          opacity: 0.28,
           pointerEvents: 'none',
         }}
       >
-        <source src="/videos/bg-fluid.mp4" type="video/mp4" />
+        <source src="/videos/bg-fluid.webm" type="video/webm" />
       </video>
-      
-      {/* Película de degradê para misturar o vídeo com o fundo escuro */}
+
       <div
         style={{
           position: 'absolute',

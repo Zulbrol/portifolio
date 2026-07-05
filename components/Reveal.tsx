@@ -1,71 +1,28 @@
 'use client';
 
-import {
-  useEffect,
-  useRef,
-  ReactNode,
-} from 'react';
+import { ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
 interface RevealProps {
   children: ReactNode;
   delay?: number;
 }
 
-export default function Reveal({
-  children,
-  delay = 0,
-}: RevealProps) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const element = ref.current;
-
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          element.style.opacity = '1';
-
-          element.style.transform =
-            'translate3d(0px,0px,0px)';
-
-          element.style.filter =
-            'blur(0px)';
-        }
-      },
-      {
-        threshold: 0.12,
-      }
-    );
-
-    observer.observe(element);
-
-    return () => observer.disconnect();
-  }, []);
-
+export default function Reveal({ children, delay = 0 }: RevealProps) {
   return (
-    <div
-      ref={ref}
-      style={{
-        opacity: 0,
-
-        transform:
-          'translate3d(0px,80px,0px)',
-
-        filter: 'blur(10px)',
-
-        transition: `
-          opacity 1.1s cubic-bezier(.16,1,.3,1) ${delay}s,
-          transform 1.1s cubic-bezier(.16,1,.3,1) ${delay}s,
-          filter 1.1s cubic-bezier(.16,1,.3,1) ${delay}s
-        `,
-
-        willChange:
-          'transform, opacity, filter',
+    <motion.div
+      initial={{ opacity: 0, y: 96, scale: 0.96 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -64, scale: 0.98 }}
+      viewport={{ once: false, amount: 0.16, margin: '12% 0px -8% 0px' }} 
+      transition={{ 
+        duration: 0.95, 
+        ease: [0.16, 1, 0.3, 1], // Curva cinematográfica premium (Awwwards design style)
+        delay: delay 
       }}
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '1px 640px', willChange: 'transform, opacity' }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }

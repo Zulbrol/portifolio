@@ -4,15 +4,26 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  scroll-behavior: smooth;
-  background-color: #000000;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-body {
-  background: #000000;
+html, body {
+  background-color: #000000;
   color: #ffffff;
+  width: 100%;
   overflow-x: hidden;
+}
+
+/* Força a aplicação da League Spartan e Plus Jakarta Sans em todo o ecossistema */
+h1, h2, h3, .font-spartan {
+  font-family: var(--font-spartan), 'League Spartan', sans-serif !important;
+}
+
+body, p, span, a, input, textarea, button, .font-jakarta {
+  font-family: var(--font-jakarta), 'Plus Jakarta Sans', sans-serif !important;
 }
 
 @media (min-width: 768px) {
@@ -21,13 +32,13 @@ body {
   }
 }
 
-/* CURSOR EM MODO INVERSÃO DIRETAMENTE TRATADO */
+/* CURSOR ELÁSTICO COM ANEL DE BRILHO E RASTRO LUXURY */
 .luxury-invert-pointer {
   position: fixed;
   top: 0;
   left: 0;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background-color: #ffffff !important;
   pointer-events: none;
@@ -36,76 +47,257 @@ body {
   will-change: transform;
   transform: translate3d(-100px, -100px, 0);
   display: block !important;
+  /* Efeito de Rastro Iluminado e Brilho Suave à sua volta */
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.3);
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
 }
 
+/* Hover reativo e bem mais visível */
 .cursor-hover-active {
-  width: 24px !important;
-  height: 24px !important;
+  width: 32px !important;
+  height: 32px !important;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.9), 0 0 50px rgba(255, 255, 255, 0.5);
 }
 
-/* TEXTOS COM INVERSÃO REAL DE COR (MISTURA DIRETAMENTE COM O VÍDEO) */
 .blend-mode-title {
   mix-blend-mode: difference !important;
   color: #ffffff !important;
 }
 
-/* REVEAL ADAPTADO PARA MOTION DESIGN (ENTRA E SAI DE CENA NO SCROLL) */
-.reveal-item {
-  opacity: 0 !important;
-  transform: translateY(80px);
-  filter: blur(15px);
-  transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
-              transform 0.8s cubic-bezier(0.25, 1, 0.5, 1),
-              filter 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-  will-change: opacity, transform, filter;
-}
-
-.reveal-visible {
-  opacity: 1 !important;
-  transform: translateY(0px);
-  filter: blur(0px);
-}
-
-.spotify-search-container {
-  transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
-}
-
-/* BRILHO ATRÁS DO VÍDEO DO GRID */
+/* ISOLAMENTO DA CAMADA DO BRILHO RADIAL MATEMATICAMENTE ATRÁS DO CARD */
 .grid-glow-layer {
   position: absolute;
-  width: 150%;
-  height: 150%;
-  top: -25%;
-  left: -25%;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.18) 0%, transparent 60%);
-  z-index: 1;
+  width: 190%;
+  height: 190%;
+  top: -45%;
+  left: -45%;
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.48) 0%, rgba(255, 255, 255, 0.16) 28%, transparent 62%),
+    radial-gradient(circle at center, rgba(125, 205, 255, 0.22) 0%, transparent 48%);
+  z-index: 0 !important; /* Base do container */
   pointer-events: none;
   transform: translate3d(0, 0, 0);
   opacity: 0;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
   will-change: transform, opacity;
 }
 
 .premium-project-card:hover .grid-glow-layer {
-  opacity: 1;
-  transform: translate3d(var(--mx, 0px), var(--my, 0px), 0) scale(1.05);
+  opacity: 0.95;
+  transform: translate3d(var(--mx, 0px), var(--my, 0px), 0) scale(1.12);
 }
 
 .premium-project-card {
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  border: none !important;
-  padding: 0 !important;
-  background: transparent !important;
+  transform-style: preserve-3d;
+  isolation: isolate;
 }
 
 .premium-project-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-8px) scale(1.02); /* Escala de toque aumentada para alta visibilidade */
 }
 
+/* Container de mídia blindado por cima do brilho traseiro */
 .grid-video-media {
   border-radius: 24px !important;
   overflow: hidden;
   position: relative;
-  z-index: 2;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  z-index: 5 !important; /* Força o vídeo a ficar na frente da luz */
+  box-shadow: 0 20px 50px rgba(0,0,0,0.72);
+  transform: translate3d(0,0,0);
+}
+
+.star-particle {
+  opacity: 0.35;
+  animation-name: starTwinkle;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.85);
+}
+
+@keyframes starTwinkle {
+  0%, 100% {
+    opacity: 0.16;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .luxury-invert-pointer {
+    display: none !important;
+  }
+
+  header {
+    width: calc(100% - 32px) !important;
+    left: 16px !important;
+    right: 16px !important;
+    grid-template-columns: 1fr auto !important;
+    row-gap: 12px !important;
+    padding: 18px 0 !important;
+  }
+
+  header > nav {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    justify-content: flex-start !important;
+    gap: 18px !important;
+    font-size: 13px !important;
+    overflow-x: auto !important;
+    scrollbar-width: none;
+  }
+
+  header > div:first-child a {
+    font-size: 18px !important;
+  }
+
+  header > div:last-child {
+    width: auto !important;
+    gap: 10px !important;
+    padding-right: 0 !important;
+    font-size: 13px !important;
+  }
+
+  h1 {
+    font-size: clamp(3.2rem, 17vw, 5.4rem) !important;
+    letter-spacing: -2px !important;
+    line-height: 0.9 !important;
+    max-width: calc(100vw - 28px);
+  }
+
+  #projects {
+    padding: 108px 16px 88px !important;
+    border-radius: 28px 28px 0 0 !important;
+  }
+
+  .project-search {
+    width: min(100%, 620px) !important;
+    height: 62px !important;
+    margin-bottom: 62px !important;
+  }
+
+  .project-search input {
+    font-size: 15px !important;
+    padding-left: 54px !important;
+    padding-right: 54px !important;
+  }
+
+  .project-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+
+  .project-column,
+  .project-column-offset {
+    width: 100% !important;
+    margin-top: 0 !important;
+  }
+
+  .premium-project-card {
+    width: min(100%, 430px) !important;
+    max-height: none !important;
+    margin-bottom: 42px !important;
+    border-radius: 24px !important;
+  }
+
+  .grid-video-media {
+    border-radius: 22px !important;
+  }
+
+  #contact {
+    min-height: 100svh !important;
+    height: auto !important;
+    padding: 96px 16px 86px !important;
+    border-radius: 28px 28px 0 0 !important;
+  }
+
+  .contact-card {
+    padding: 34px 22px !important;
+    border-radius: 24px !important;
+    gap: 28px !important;
+  }
+
+  .contact-card h2 {
+    font-size: 28px !important;
+    line-height: 1.05 !important;
+  }
+
+  .contact-links {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 18px !important;
+    text-align: center !important;
+  }
+
+  .contact-links a {
+    max-width: 100% !important;
+    overflow-wrap: anywhere !important;
+    justify-content: center !important;
+  }
+
+  .social-links {
+    gap: 16px !important;
+    flex-wrap: wrap !important;
+  }
+
+  #contact footer {
+    flex-direction: column !important;
+    gap: 8px !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  #contact > div:last-child {
+    width: calc(100% - 32px) !important;
+    bottom: 24px !important;
+  }
+
+  .cinema-overlay {
+    padding: 18px !important;
+    align-items: center !important;
+  }
+
+  .cinema-close {
+    top: 18px !important;
+    right: 18px !important;
+  }
+
+  .cinema-panel {
+    max-width: calc(100vw - 36px) !important;
+    max-height: calc(100svh - 96px) !important;
+  }
+}
+
+@media (max-width: 430px) {
+  header {
+    row-gap: 10px !important;
+  }
+
+  header > nav {
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+
+  h1 {
+    font-size: clamp(2.85rem, 16vw, 4.2rem) !important;
+  }
+
+  #projects {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .premium-project-card {
+    width: 100% !important;
+  }
 }
