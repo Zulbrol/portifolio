@@ -21,6 +21,9 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: 'Zulbrol | Portfolio',
   description: 'High-End Video Editing & Motion Design',
+   verification: {
+    google: '<meta name="google-site-verification" content="_KqhTn_27d8r77xIKGOUEdL3nLzla9HFDhJq-gRmhHw" />',
+ },
 };
 
 export default function RootLayout({
