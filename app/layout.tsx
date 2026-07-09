@@ -18,13 +18,14 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: 'Zulbrol | Portfolio',
-  description: 'High-End Video Editing & Motion Design',
-   verification: {
-    google: '_KqhTn_27d8r77xiSkGOUedL3nLzla9HFDhJq-gRmhHw',
+export const metadata = {
+  title: 'Zulbrol | Diretor Visual & Editor de Vídeos',
+  description: 'Portfólio oficial de edições, design visual e produções.',
+  verification: {
+    google: '_KqhTn_27d8r77xIKGOUEdL3nLzla9HFDhJq-gRmhHw', 
   },
-};
+}
+
 
 export default function RootLayout({
   children,
