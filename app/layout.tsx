@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { League_Spartan, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import Cursor from '@/components/Cursor';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 // Importação oficial e otimizada das fontes do projeto
 const leagueSpartan = League_Spartan({
@@ -40,6 +41,7 @@ export default function RootLayout({
       >
         <Cursor />
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );
