@@ -18,30 +18,37 @@ export interface Project {
 
 const REAL_PROJECTS: Project[] = [
   // 1. VIDEOS GEEK SHORTS (9/16)
-  { id: 1, title: 'GEEK SHORT 1', category: 'GEEK EDIT', year: '2026', type: 'video', src: '/videos/geek1.webm', thumb: '/thumbs/geek1.jpg', aspectRatio: '9/16' },
-  { id: 2, title: 'GEEK SHORT 2', category: 'GEEK EDIT', year: '2026', type: 'video', src: '/videos/geek2.webm', thumb: '/thumbs/geek2.jpg', aspectRatio: '9/16' },
+  { id: 1, title: 'Gojo Short', category: 'GEEK EDIT', year: '2026', type: 'video', src: '/videos/geek1.webm', thumb: '/thumbs/geek1.jpg', aspectRatio: '9/16' },
+  { id: 2, title: 'Megume Short', category: 'GEEK EDIT', year: '2026', type: 'video', src: '/videos/geek2.webm', thumb: '/thumbs/geek2.jpg', aspectRatio: '9/16' },
   
   // 2. ANIME EDIT SHORT & MINECRAFT SHORT (9/16)
-  { id: 3, title: 'ANIME EDIT SHORT', category: 'ANIME EDIT', year: '2026', type: 'video', src: '/videos/anime_short.webm', thumb: '/thumbs/anime_short.jpg', aspectRatio: '9/16' },
+  { id: 3, title: 'Thorfin Edit', category: 'ANIME EDIT', year: '2026', type: 'video', src: '/videos/anime_short.webm', thumb: '/thumbs/anime_short.jpg', aspectRatio: '9/16' },
   
   // 3. MINECRAFT HORIZONTAL & VÍDEO DINÂMICO HORIZONTAL (16/10)
-  { id: 6, title: 'VÍDEO DINÂMICO', category: 'VÍDEO DINÂMICO', year: '2026', type: 'video', src: '/videos/dinamico.webm', thumb: '/thumbs/dinamico.jpg', aspectRatio: '9/16' },
+  { id: 6, title: 'tiktok com 100k de views', category: 'VÍDEO DINÂMICO', year: '2026', type: 'video', src: '/videos/dinamico.webm', thumb: '/thumbs/dinamico.jpg', aspectRatio: '9/16' },
 
   // 4. SEUS 6 WALLPAPERS SELECIONADOS (9/16)
-  { id: 7, title: 'SPACE WALLPAPER', category: 'WALLPAPER', year: '2025', type: 'image', src: '/images/wp1.jpg', thumb: '/thumbs/wp1.jpg', aspectRatio: '9/16' },
-  { id: 8, title: 'CYBERPUNK ART', category: 'WALLPAPER', year: '2025', type: 'image', src: '/images/wp2.jpg', thumb: '/thumbs/wp2.jpg', aspectRatio: '9/16' },
-  { id: 9, title: 'NEON DRIFT', category: 'WALLPAPER', year: '2026', type: 'image', src: '/images/wp3.jpg', thumb: '/thumbs/wp3.jpg', aspectRatio: '9/16' },
-  { id: 10, title: 'CHILL VIBES', category: 'WALLPAPER', year: '2025', type: 'image', src: '/images/wp4.jpg', thumb: '/thumbs/wp4.jpg', aspectRatio: '9/16' },
-  { id: 11, title: 'DARK GLOW', category: 'WALLPAPER', year: '2026', type: 'image', src: '/images/wp5.jpg', thumb: '/thumbs/wp5.jpg', aspectRatio: '9/16' },
-  { id: 12, title: 'ABSTRACT MOTION', category: 'WALLPAPER', year: '2026', type: 'image', src: '/images/wp6.jpg', thumb: '/thumbs/wp6.jpg', aspectRatio: '9/16' },
+  { id: 7, title: 'BMW Art', category: 'WALLPAPER', year: '2025', type: 'image', src: '/images/wp1.jpg', thumb: '/thumbs/wp1.jpg', aspectRatio: '9/16' },
+  { id: 8, title: 'Billie Eilish Art', category: 'WALLPAPER', year: '2026', type: 'image', src: '/images/wp2.jpg', thumb: '/thumbs/wp2.jpg', aspectRatio: '9/16' },
+  { id: 9, title: 'Chihiro Art', category: 'WALLPAPER', year: '2026', type: 'image', src: '/images/wp3.jpg', thumb: '/thumbs/wp3.jpg', aspectRatio: '9/16' },
+  { id: 10, title: 'Gojo Art', category: 'WALLPAPER', year: '2026', type: 'image', src: '/images/wp4.jpg', thumb: '/thumbs/wp4.jpg', aspectRatio: '9/16' },
+  { id: 11, title: 'Rock Girl Art', category: 'WALLPAPER', year: '2026', type: 'image', src: '/images/wp5.jpg', thumb: '/thumbs/wp5.jpg', aspectRatio: '9/16' },
+  { id: 12, title: 'Akali Art', category: 'WALLPAPER', year: '2026', type: 'image', src: '/images/wp6.jpg', thumb: '/thumbs/wp6.jpg', aspectRatio: '9/16' },
+  { id: 13, title: 'Convite de Aniversário', category: 'PANFLEITO', year: '2026', type: 'image', src: '/images/ca.jpg', thumb: '/thumbs/ca.jpg', aspectRatio: '9/16' },
+  { id: 14, title: 'Panfleto de Cuidador de Pets', category: 'PANFLEITO', year: '2026', type: 'image', src: '/images/pc.jpg', thumb: '/thumbs/pc.jpg', aspectRatio: '9/16' },
 
   // 5. SEUS 2 BANNERS PANORÂMICOS (16/5)
-  { id: 13, title: 'YOUTUBE BANNER ART', category: 'BANNER', year: '2026', type: 'image', src: '/images/banner1.jpg', thumb: '/thumbs/banner1.jpg', aspectRatio: '16/5' },
-  { id: 14, title: 'TWITCH STREAM HEADER', category: 'BANNER', year: '2026', type: 'image', src: '/images/banner2.jpg', thumb: '/thumbs/banner2.jpg', aspectRatio: '16/5' },
+  { id: 15, title: 'Arte para Banner do Youtube', category: 'BANNER', year: '2026', type: 'image', src: '/images/banner1.jpg', thumb: '/thumbs/banner1.jpg', aspectRatio: '16/5' },
+  { id: 16, title: 'Itachi Arte 4k', category: 'BANNER', year: '2026', type: 'image', src: '/images/banner2.jpg', thumb: '/thumbs/banner2.jpg', aspectRatio: '16/9' },
+  { id: 17, title: 'thumb para o EscuriDog', category: 'THUMBNAIL', year: '2026', type: 'image', src: '/images/tb1.jpg', thumb: '/thumbs/tb1.jpg', aspectRatio: '16/9' },
+  { id: 18, title: 'thumb para o EscuriDog', category: 'THUMBNAIL', year: '2026', type: 'image', src: '/images/tb2.jpg', thumb: '/thumbs/tb2.jpg', aspectRatio: '16/9' },
+  { id: 19, title: 'thumb para o Viagem Sem Grana', category: 'THUMBNAIL', year: '2026', type: 'image', src: '/images/tb3.jpg', thumb: '/thumbs/tb3.jpg', aspectRatio: '16/9' },
 
   // 6. SUAS 2 FOTOS DE PERFIL QUADRADAS (1/1)
-  { id: 15, title: 'AVATAR CONCEPT 1', category: 'PROFILE PICTURE', year: '2026', type: 'image', src: '/images/pfp1.jpg', thumb: '/thumbs/pfp1.jpg', aspectRatio: '1/1' },
-  { id: 16, title: 'AVATAR CONCEPT 2', category: 'PROFILE PICTURE', year: '2026', type: 'image', src: '/images/pfp2.jpg', thumb: '/thumbs/pfp2.jpg', aspectRatio: '1/1' },
+  { id: 20, title: 'Foto de Perfil Para o Youtube', category: 'PROFILE PICTURE', year: '2026', type: 'image', src: '/images/pfp1.jpg', thumb: '/thumbs/pfp1.jpg', aspectRatio: '1/1' },
+  { id: 21, title: 'Foto de Perfil para o Instagram', category: 'PROFILE PICTURE', year: '2026', type: 'image', src: '/images/pfp2.jpg', thumb: '/thumbs/pfp2.jpg', aspectRatio: '1/1' },
+  { id: 22, title: 'Foto de Perfil para o Twitter', category: 'PROFILE PICTURE', year: '2026', type: 'image', src: '/images/pfp3.jpg', thumb: '/thumbs/pfp3.jpg', aspectRatio: '1/1' },
+  { id: 23, title: 'Foto de Estatua Historica', category: 'FOTO', year: '2026', type: 'image', src: '/images/photo1.jpg', thumb: '/thumbs/photo1.jpg', aspectRatio: '9/16' }
 ];
 
 interface ProjectsProps {
